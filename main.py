@@ -1,31 +1,35 @@
-word = "rabbit"
-string_list = list(word)
+from termcolor import colored
 
-print(string_list)
-
-grid = [
-    ['A', 'B', 'C', 't', 'x', 'F'],
-    ['G', 'H', 'I', 'J', 'i', 'L'],
-    ['M', 'N', 'O', 'b', 'Q', 'R'],
-    ['r', 'w', 'b', 'p', 'x', 'x'],
-    ['Y', 'a', 'A', 'x', 'C', 'D'],
-    ['E', 'F', 'G', 'H', 'I', 'J'],
-    ['K', 'L', 'M', 'N', 'O', 'P'],
-    ['Q', 'R', 'S', 'T', 'U', 'r']
+words_to_search = [
+    "rabbit", "apple", "cat", "dog", "fish", "goat", "hat",
+    "ice", "juice", "kite", "lion", "monkey", "nose", "orange",
+    "pencil", "queen", "rabbit", "snake", "tiger", "umbrella",
+    "vase", "whale", "x-ray", "yogurt", "zebra"
 ]
 
-def find_word_in_grid(grid, word):
+grid = [
+    ['t', 'x', 'x', 'x', 'x', 'x'],
+    ['i', 'b', 'x', 'x', 'x', 'x'],
+    ['a', 'b', 'x', 'x', 'x', 'e'],
+    ['r', 'x', 'x', 'x', 'l', 'x'],
+    ['x', 'a', 'p', 'p', 'x', 'x'],
+    ['x', 'x', 'x', 'x', 'x', 'x'],
+    ['i', 'e', 'x', 'x', 'x', 'x'],
+    ['c', 'x', 'x', 'x', 'x', 'x']
+]
+
+def is_valid(x, y, rows, cols):
+    return 0 <= x < rows and 0 <= y < cols
+
+def search_word(grid, word):
     rows = len(grid)
     cols = len(grid[0])
     word_length = len(word)
     
-    def is_valid(x, y):
-        return 0 <= x < rows and 0 <= y < cols
-
     def dfs(x, y, word, index, path):
         if index == len(word):
             return path
-        if not is_valid(x, y) or grid[x][y] != word[index]:
+        if not is_valid(x, y, rows, cols) or grid[x][y] != word[index]:
             return None
         
         # Mark the current cell as visited
@@ -62,8 +66,16 @@ def find_word_in_grid(grid, word):
                     return path
     return []
 
-positions = find_word_in_grid(grid, string_list)
-if positions:
-    print(f"Word '{word}' found at positions: {positions}")
+found_words = {}
+
+for word in words_to_search:
+    grid_copy = [row[:] for row in grid]  # Create a copy of the grid for each word
+    positions = search_word(grid_copy, word)
+    if positions:
+        found_words[word] = positions
+
+if found_words:
+    for word, positions in found_words.items():
+        print(f"Word '{word}' found at positions: {positions}")
 else:
-    print(f"Word '{word}' not found in the grid")
+    print("No words found in the grid")
